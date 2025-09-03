@@ -1,44 +1,49 @@
 # Contributing to DailyDev Digest
 
-Thanks for your interest in contributing! This is a simple project focused on readability and maintainability.
+Thanks for your interest in contributing to DailyDev Digest! This document provides some basic guidelines for contributing.
 
-## Development Setup
+## Running Locally
 
-1. Fork and clone the repository
-2. Install dependencies: `npm install`
-3. Start development server: `npm run dev`
-4. Open http://localhost:3000
+1. Fork the repository
+2. Clone your fork: `git clone https://github.com/YOUR_USERNAME/dailydev-digest.git`
+3. Install dependencies: `npm install`
+4. Run the development server: `npm run dev`
+5. Open [http://localhost:3000](http://localhost:3000)
+
+## Development Guidelines
+
+- Keep it simple - this project aims to be readable and maintainable
+- Follow the existing code style (we use Prettier and ESLint)
+- Write meaningful commit messages
+- Test your changes thoroughly
 
 ## Code Style
 
-- Use Prettier for formatting: `npm run format`
-- Use ESLint for linting: `npm run lint`
-- Keep functions small and focused
-- Write clear, simple comments
-- Avoid over-engineering and unnecessary abstractions
+We use ESLint and Prettier to maintain code quality:
+
+```bash
+# Format code
+npm run format
+
+# Check for linting issues
+npm run lint
+```
 
 ## Issue Labels
 
-- `good first issue` - Good for newcomers
-- `help wanted` - General help needed
-- `bug` - Something isn't working
-- `enhancement` - New feature or request
+- `good first issue` - Great for newcomers
+- `help wanted` - Issues we need help with
+- `bug` - Something isn't working correctly
+- `enhancement` - New feature or improvement
 
-## Pull Request Guidelines
+## Pull Request Process
 
-1. Keep changes focused and small
-2. Test your changes locally
-3. Update documentation if needed
-4. Add tests for new features (if applicable)
-5. Follow the existing code style
-
-## Project Structure
-
-- `/app` - Next.js App Router pages and API routes
-- `/components` - Reusable React components
-- `/lib` - Utility functions and helpers
-- `/public` - Static assets
+1. Create a branch with a descriptive name
+2. Make your changes
+3. Test your changes
+4. Submit a PR with a clear description of the changes
+5. Wait for review and address any feedback
 
 ## Questions?
 
-Open an issue or start a discussion. We're friendly and happy to help!
+Feel free to open an issue if you have any questions about contributing!

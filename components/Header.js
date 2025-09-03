@@ -1,51 +1,40 @@
-'use client'
+import Link from 'next/link';
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-
-export default function Header() {
-  const [searchQuery, setSearchQuery] = useState('')
-  const router = useRouter()
-
-  const handleSearch = (e) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      router.push(`/?search=${encodeURIComponent(searchQuery.trim())}`)
-    }
-  }
-
+export default function Header({ searchQuery, onSearchChange }) {
   return (
-    <header className="bg-white shadow-sm border-b">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-8">
-            <Link href="/" className="text-xl font-bold text-gray-900">
+    <header className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center">
+            <Link href="/" className="text-xl font-bold text-primary-600 flex items-center">
+              <span className="mr-2">📰</span>
               DailyDev Digest
             </Link>
-            <nav className="flex space-x-6">
-              <Link href="/" className="text-gray-600 hover:text-gray-900">
-                Feed
-              </Link>
-              <Link href="/saved" className="text-gray-600 hover:text-gray-900">
-                Saved
-              </Link>
-              <Link href="/digest" className="text-gray-600 hover:text-gray-900">
-                Digest
-              </Link>
-            </nav>
           </div>
-          <form onSubmit={handleSearch} className="flex-1 max-w-md ml-8">
+          
+          <div className="flex-1 max-w-lg mx-8">
             <input
               type="text"
-              placeholder="Search articles..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Search news..."
+              className="w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              value={searchQuery || ''}
+              onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
             />
-          </form>
+          </div>
+          
+          <nav className="flex space-x-4">
+            <Link href="/" className="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md">
+              Feed
+            </Link>
+            <Link href="/saved" className="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md">
+              Saved
+            </Link>
+            <Link href="/digest" className="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md">
+              Digest
+            </Link>
+          </nav>
         </div>
       </div>
     </header>
-  )
+  );
 }

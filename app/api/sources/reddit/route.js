@@ -1,30 +1,33 @@
-import { fetchReddit } from '../../../lib/sources'
-import { getCache, setCache } from '../../../lib/cache'
+import { fetchReddit } from '../../../../lib/sources';
+import { normalizeReddit } from '../../../../lib/normalize';
+import { getCache, setCache } from '../../../../lib/cache';
 
 export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const query = searchParams.get('query') || '';
+  
+  // Create a cache key
+  const cacheKey = `reddit:${query}`;
+  
+  // Check cache first
+  const cached = getCache(cacheKey);
+  if (cached) {
+    return Response.json({ items: cached });
+  }
+  
   try {
-    const { searchParams } = new URL(request.url)
-    const query = searchParams.get('query') || ''
+    const results = await fetchReddit(query);
+    const normalizedItems = results.map(normalizeReddit);
     
-    // check cache first
-    const cacheKey = `reddit:${query}`
-    const cached = getCache(cacheKey)
-    if (cached) {
-      return Response.json({ items: cached })
-    }
+    // Store in cache
+    setCache(cacheKey, normalizedItems);
     
-    // fetch fresh data
-    const items = await fetchReddit(query)
-    
-    // cache the result
-    setCache(cacheKey, items)
-    
-    return Response.json({ items })
+    return Response.json({ items: normalizedItems });
   } catch (error) {
-    console.error('Reddit API error:', error)
+    console.error('Reddit API error:', error);
     return Response.json(
       { items: [] },
       { headers: { 'x-dd-error': 'true' } }
-    )
+    );
   }
 }

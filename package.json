@@ -1,26 +1,27 @@
 {
-    "name": "dailydev-digest",
-    "version": "0.1.0",
-    "private": true,
-    "scripts": {
-        "dev": "next dev",
-        "build": "next build",
-        "start": "next start",
-        "lint": "next lint",
-        "format": "prettier --write ."
-    },
-    "dependencies": {
-        "next": "14.0.0",
-        "react": "^18",
-        "react-dom": "^18",
-        "tailwindcss": "^3.3.0",
-        "postcss": "^8",
-        "autoprefixer": "^10.0.1",
-        "reading-time": "^1.5.0"
-    },
-    "devDependencies": {
-        "eslint": "^8",
-        "eslint-config-next": "14.0.0",
-        "prettier": "^3.0.0"
-    }
+  "name": "dailydev-digest",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ext .js",
+    "format": "prettier --write \"**/*.{js,json,md}\""
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "reading-time": "^1.5.0",
+    "swr": "^2.2.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.50.0",
+    "eslint-config-next": "^14.0.0",
+    "postcss": "^8.4.31",
+    "prettier": "^3.0.3",
+    "tailwindcss": "^3.3.3"
+  }
 }

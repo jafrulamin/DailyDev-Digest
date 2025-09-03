@@ -1,31 +1,34 @@
-import { fetchDevto } from '../../../lib/sources'
-import { getCache, setCache } from '../../../lib/cache'
+import { fetchDevto } from '../../../../lib/sources';
+import { normalizeDevto } from '../../../../lib/normalize';
+import { getCache, setCache } from '../../../../lib/cache';
 
 export async function GET(request) {
-    try {
-        const { searchParams } = new URL(request.url)
-        const query = searchParams.get('query') || ''
-        const tag = searchParams.get('tag') || ''
-
-        // check cache first
-        const cacheKey = `devto:${tag}:${query}`
-        const cached = getCache(cacheKey)
-        if (cached) {
-            return Response.json({ items: cached })
-        }
-
-        // fetch fresh data
-        const items = await fetchDevto(tag, query)
-
-        // cache the result
-        setCache(cacheKey, items)
-
-        return Response.json({ items })
-    } catch (error) {
-        console.error('Dev.to API error:', error)
-        return Response.json(
-            { items: [] },
-            { headers: { 'x-dd-error': 'true' } }
-        )
-    }
+  const { searchParams } = new URL(request.url);
+  const query = searchParams.get('query') || '';
+  const tag = searchParams.get('tag') || '';
+  
+  // Create a cache key
+  const cacheKey = `devto:${tag}:${query}`;
+  
+  // Check cache first
+  const cached = getCache(cacheKey);
+  if (cached) {
+    return Response.json({ items: cached });
+  }
+  
+  try {
+    const results = await fetchDevto(tag, query);
+    const normalizedItems = results.map(normalizeDevto);
+    
+    // Store in cache
+    setCache(cacheKey, normalizedItems);
+    
+    return Response.json({ items: normalizedItems });
+  } catch (error) {
+    console.error('Dev.to API error:', error);
+    return Response.json(
+      { items: [] },
+      { headers: { 'x-dd-error': 'true' } }
+    );
+  }
 }

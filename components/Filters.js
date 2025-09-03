@@ -1,39 +1,38 @@
-'use client'
-
-export default function Filters({ source, onSourceChange, tag, onTagChange }) {
+export default function Filters({ activeSource, onSourceChange, tag, onTagChange }) {
   const sources = [
-    { value: 'all', label: 'All' },
-    { value: 'hn', label: 'Hacker News' },
-    { value: 'devto', label: 'Dev.to' },
-    { value: 'reddit', label: 'Reddit' },
-  ]
-
+    { id: 'all', label: 'All Sources' },
+    { id: 'hn', label: 'Hacker News' },
+    { id: 'devto', label: 'Dev.to' },
+    { id: 'reddit', label: 'Reddit' }
+  ];
+  
   return (
-    <div className="mb-6 space-y-4">
-      <div className="flex flex-wrap gap-2">
-        {sources.map((s) => (
+    <div className="mb-6">
+      <div className="flex flex-wrap gap-2 mb-4">
+        {sources.map((source) => (
           <button
-            key={s.value}
-            onClick={() => onSourceChange(s.value)}
-            className={`px-4 py-2 rounded-md text-sm font-medium ${
-              source === s.value
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            key={source.id}
+            className={`px-4 py-2 rounded-md ${
+              activeSource === source.id
+                ? 'bg-primary-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
+            onClick={() => onSourceChange(source.id)}
           >
-            {s.label}
+            {source.label}
           </button>
         ))}
       </div>
-      <div>
+      
+      <div className="mt-3">
         <input
           type="text"
           placeholder="Filter by tag (optional)"
-          value={tag}
+          className="w-full sm:w-64 rounded-md border border-gray-300 px-4 py-2 text-sm"
+          value={tag || ''}
           onChange={(e) => onTagChange(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
     </div>
-  )
+  );
 }

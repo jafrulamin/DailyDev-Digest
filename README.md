@@ -1,61 +1,50 @@
 # DailyDev Digest
 
-A simple web app that aggregates developer news from Hacker News, Dev.to, and Reddit programming communities. Built with Next.js 14 and Tailwind CSS.
+A simple developer news aggregator that combines stories from Hacker News, Dev.to, and Reddit programming subreddits.
+
+![DailyDev Digest Screenshot](public/og-image.png)
 
 ## Features
 
-- **Multi-source aggregation**: Combines articles from Hacker News, Dev.to, and Reddit
-- **Filtering**: Filter by source or search by keyword
-- **Save articles**: Save interesting articles locally (localStorage)
-- **Export saved**: Export your saved articles to CSV
-- **Top 10 digest**: View the most popular articles across all sources
-- **Simple caching**: 5-minute cache to avoid spamming public APIs
+- View combined news feed from multiple developer sources
+- Filter by source (HN, Dev.to, Reddit)
+- Search by keyword
+- Save articles locally (no account needed)
+- Export saved items to CSV
+- View a daily digest of top articles
 
-## Quick Start
+## Running Locally
 
 ```bash
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## API Endpoints
 
-- `GET /api/aggregate` - Get articles from all sources
-- `GET /api/sources/hn` - Hacker News articles
-- `GET /api/sources/devto` - Dev.to articles  
-- `GET /api/sources/reddit` - Reddit programming articles
+- `/api/aggregate` - Combined feed from all sources
+  - Query params: `source` (all, hn, devto, reddit), `query`, `tag`
+- `/api/sources/hn` - Hacker News articles
+- `/api/sources/devto` - Dev.to articles
+- `/api/sources/reddit` - Reddit programming posts
 
-Query parameters:
-- `query` - Search term
-- `source` - Filter by source (hn, devto, reddit, all)
-- `tag` - Filter Dev.to by tag
+## Deploy
 
-## Deployment
+The easiest way to deploy is using Vercel:
 
-Deploy to Vercel with one click:
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fdailydev-digest)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/dailydev-digest)
+## 60-Second Demo
 
-## Demo
-
-1. Browse the main feed to see articles from all sources
-2. Use filters to focus on specific sources or search terms
-3. Save interesting articles using the Save button
-4. View your saved articles on the Saved page
-5. Export saved articles to CSV for offline reading
-6. Check the Digest page for top articles by popularity
-
-## Tech Stack
-
-- Next.js 14 (App Router)
-- React 18
-- Tailwind CSS
-- JavaScript (no TypeScript)
-- localStorage for persistence
-- Public APIs (no authentication required)
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
+1. Open the app and browse the combined feed
+2. Click a source filter to narrow down results
+3. Search for a topic like "javascript" or "react"
+4. Save a few interesting articles
+5. Visit the Saved page to see your collection
+6. Export your saved items to CSV
+7. Check out the Digest page for top trending stories
