@@ -19,6 +19,7 @@ export async function GET(request) {
   console.log('Fetching from Reddit API with query:', query);
   
   try {
+    // Use our updated fetchReddit function that calls the proxy
     const results = await fetchReddit(query);
     console.log(`Reddit API returned ${results.length} results`);
     

@@ -1,42 +1,63 @@
-import { fetchReddit } from '../../../../lib/sources';
-import { normalizeReddit } from '../../../../lib/normalize';
-import { getCache, setCache } from '../../../../lib/cache';
+// This is a server-side proxy for fetching Reddit data to bypass CORS issues
+// No imports needed from lib files
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get('query') || '';
   
-  // Create a cache key
-  const cacheKey = `reddit:${query}`;
-  
-  // Check cache first
-  const cached = getCache(cacheKey);
-  if (cached) {
-    console.log('Reddit cache hit for:', query);
-    return Response.json({ items: cached });
-  }
-  
-  console.log('Fetching from Reddit API with query:', query);
-  
   try {
-    // Use our updated fetchReddit function that calls the proxy
-    const results = await fetchReddit(query);
-    console.log(`Reddit API returned ${results.length} results`);
+    // We use multiple subreddits for a better variety of programming content
+    const subreddits = ['programming', 'webdev', 'javascript'];
+    const promises = subreddits.map(sub => fetchSubreddit(sub));
     
-    // Filter out null items after normalization
-    const normalizedItems = results
-      .map(normalizeReddit)
-      .filter(item => item !== null);
+    // Wait for all subreddit requests to complete
+    const results = await Promise.all(promises);
     
-    // Store in cache
-    setCache(cacheKey, normalizedItems);
+    // Merge all results
+    let allPosts = results.flat();
     
-    return Response.json({ items: normalizedItems });
+    // Filter by query if provided
+    if (query) {
+      allPosts = allPosts.filter(post => 
+        post.data.title.toLowerCase().includes(query.toLowerCase())
+      );
+    }
+    
+    // Limit results to avoid huge responses
+    allPosts = allPosts.slice(0, 30);
+    
+    return Response.json({ posts: allPosts });
   } catch (error) {
-    console.error('Reddit API error:', error);
-    return Response.json(
-      { items: [], error: error.message },
-      { headers: { 'x-dd-error': 'true' } }
-    );
+    console.error('Reddit proxy error:', error);
+    return Response.json({ posts: [] }, { status: 500 });
+  }
+}
+
+async function fetchSubreddit(subreddit) {
+  try {
+    const url = `https://www.reddit.com/r/${subreddit}/hot.json?limit=20`;
+    
+    const response = await fetch(url, {
+      headers: {
+        // A proper user agent helps avoid Reddit API blocks
+        'User-Agent': 'web:dailydev-digest:v1.0 (by /u/anonymous)'
+      },
+      // Setting a short cache to respect Reddit's rate limits
+      cache: 'force-cache',
+      next: {
+        revalidate: 300 // Revalidate every 5 minutes
+      }
+    });
+    
+    if (!response.ok) {
+      console.error(`Reddit API error for r/${subreddit}:`, response.status);
+      return [];
+    }
+    
+    const data = await response.json();
+    return data.data?.children || [];
+  } catch (error) {
+    console.error(`Error fetching from r/${subreddit}:`, error);
+    return [];
   }
 }
