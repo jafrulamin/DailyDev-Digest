@@ -1,5 +1,5 @@
 # DailyDev Digest
-Live Deploywed at vercel: https://daily-dev-digest.vercel.app/
+Live Deployed at vercel: https://daily-dev-digest.vercel.app/
 
 
 
