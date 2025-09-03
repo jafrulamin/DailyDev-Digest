@@ -12,12 +12,20 @@ export async function GET(request) {
   // Check cache first
   const cached = getCache(cacheKey);
   if (cached) {
+    console.log('HN cache hit for:', query);
     return Response.json({ items: cached });
   }
   
+  console.log('Fetching from HN API with query:', query);
+  
   try {
     const results = await fetchHN(query);
-    const normalizedItems = results.map(normalizeHN);
+    console.log(`HN API returned ${results.length} results`);
+    
+    // Filter out null items after normalization
+    const normalizedItems = results
+      .map(normalizeHN)
+      .filter(item => item !== null);
     
     // Store in cache
     setCache(cacheKey, normalizedItems);
@@ -26,7 +34,7 @@ export async function GET(request) {
   } catch (error) {
     console.error('HN API error:', error);
     return Response.json(
-      { items: [] },
+      { items: [], error: error.message },
       { headers: { 'x-dd-error': 'true' } }
     );
   }

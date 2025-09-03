@@ -12,12 +12,20 @@ export async function GET(request) {
   // Check cache first
   const cached = getCache(cacheKey);
   if (cached) {
+    console.log('Reddit cache hit for:', query);
     return Response.json({ items: cached });
   }
   
+  console.log('Fetching from Reddit API with query:', query);
+  
   try {
     const results = await fetchReddit(query);
-    const normalizedItems = results.map(normalizeReddit);
+    console.log(`Reddit API returned ${results.length} results`);
+    
+    // Filter out null items after normalization
+    const normalizedItems = results
+      .map(normalizeReddit)
+      .filter(item => item !== null);
     
     // Store in cache
     setCache(cacheKey, normalizedItems);
@@ -26,7 +34,7 @@ export async function GET(request) {
   } catch (error) {
     console.error('Reddit API error:', error);
     return Response.json(
-      { items: [] },
+      { items: [], error: error.message },
       { headers: { 'x-dd-error': 'true' } }
     );
   }

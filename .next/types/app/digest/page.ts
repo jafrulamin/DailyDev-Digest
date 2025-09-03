@@ -1,4 +1,4 @@
-// File: C:\Users\aminj\OneDrive\Desktop\nnnnnnn\app\digest\page.js
+// File: C:\Users\aminj\OneDrive\Desktop\Daily-Dev Clean\app\digest\page.js
 import * as entry from '../../../../app/digest/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

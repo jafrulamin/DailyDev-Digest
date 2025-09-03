@@ -1,6 +1,9 @@
 {
-  "/api/aggregate/route": "app/api/aggregate/route.js",
   "/page": "app/page.js",
-  "/digest/page": "app/digest/page.js",
-  "/saved/page": "app/saved/page.js"
+  "/api/aggregate/route": "app/api/aggregate/route.js",
+  "/api/sources/hn/route": "app/api/sources/hn/route.js",
+  "/api/sources/devto/route": "app/api/sources/devto/route.js",
+  "/api/sources/reddit/route": "app/api/sources/reddit/route.js",
+  "/saved/page": "app/saved/page.js",
+  "/digest/page": "app/digest/page.js"
 }

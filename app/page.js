@@ -11,7 +11,8 @@ export default function HomePage() {
   const [activeSource, setActiveSource] = useState('all');
   const [tag, setTag] = useState('');
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [savedItems, setSavedItems] = useState({});
   
   // Load saved items from localStorage on mount
@@ -34,8 +35,12 @@ export default function HomePage() {
   
   // Fetch data when filters change
   useEffect(() => {
+    let ignore = false;
+    const controller = new AbortController();
+    
     async function fetchData() {
       setLoading(true);
+      setError(null);
       
       try {
         const params = new URLSearchParams();
@@ -43,21 +48,43 @@ export default function HomePage() {
         if (activeSource !== 'all') params.append('source', activeSource);
         if (tag) params.append('tag', tag);
         
-        const response = await fetch(`/api/aggregate?${params.toString()}`);
+        console.log('Fetching with params:', params.toString());
+        
+        const response = await fetch(`/api/aggregate?${params.toString()}`, {
+          signal: controller.signal
+        });
+        
+        if (!response.ok) {
+          throw new Error(`API returned ${response.status}`);
+        }
+        
         const data = await response.json();
         
-        setItems(data.items || []);
+        if (!ignore) {
+          console.log(`Received ${data.items?.length || 0} items`);
+          setItems(data.items || []);
+        }
       } catch (error) {
-        console.error('Failed to fetch articles:', error);
-        setItems([]);
+        if (!ignore) {
+          console.error('Failed to fetch articles:', error);
+          setError(error.message);
+          setItems([]);
+        }
       } finally {
-        setLoading(false);
+        if (!ignore) {
+          setLoading(false);
+        }
       }
     }
     
     // Use a small timeout to avoid hammering the API on rapid input changes
     const timeoutId = setTimeout(fetchData, 300);
-    return () => clearTimeout(timeoutId);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      ignore = true;
+      controller.abort();
+    };
   }, [searchQuery, activeSource, tag]);
   
   // Handle saving/unsaving items
@@ -98,6 +125,11 @@ export default function HomePage() {
             <div className="animate-pulse text-center">
               <p className="text-gray-500">Loading articles...</p>
             </div>
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 p-4 rounded-md">
+            <p className="text-red-700">Error loading articles: {error}</p>
+            <p className="text-red-600 text-sm mt-2">Try refreshing or changing your search terms.</p>
           </div>
         ) : items.length > 0 ? (
           <div className="space-y-4">
