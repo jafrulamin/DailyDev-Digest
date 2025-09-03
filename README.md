@@ -1,5 +1,8 @@
 # DailyDev Digest
 Live Deploywed at vercel: https://daily-dev-digest.vercel.app/
+
+
+
 A simple developer news aggregator that combines stories from Hacker News, Dev.to, and Reddit programming subreddits.
 
 ![DailyDev Digest Screenshot](public/og-image.png)
